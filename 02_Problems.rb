@@ -172,66 +172,67 @@ describe "Uniform motion" do
     expect((xf - slowerPositionAtFasterFinish).round(2)).to eq 1.73
   end
 
-  it "[p64 q12] A bycyclist has the position-versus-time graph shown in Figure P2.12. What is the bicyclist's velocity at t = 10s, at t - 25s, and at t = 35s?" do
-    Gnuplot.open do|gp|
-      Gnuplot::Plot.new(gp) do |plot|
-        plot.xrange "[0:40]"
-        plot.yrange "[0:110]"
-        plot.title "Figure P2.12"
-        plot.xlabel "t(s)"
-        plot.ylabel "x(m)"
-        plot.data = [
-          Gnuplot::DataSet.new("x >= 0 && x <= 20 ? (5 * x)/2 + 50 : 1/0") { |ds|
-            ds.with = "lines"
-            ds.title = "(5/2)*x + 50"
-            ds.linewidth = 2
-          },
+  # it "[p64 q12] A bycyclist has the position-versus-time graph shown in Figure P2.12. What is the bicyclist's velocity at t = 10s, at t - 25s, and at t = 35s?" do
+  #   Gnuplot.open do|gp|
+  #     Gnuplot::Plot.new(gp) do |plot|
+  #       plot.xrange "[0:40]"
+  #       plot.yrange "[0:110]"
+  #       plot.title "Figure P2.12"
+  #       plot.xlabel "t(s)"
+  #       plot.ylabel "x(m)"
+  #       plot.data = [
+  #         Gnuplot::DataSet.new("x >= 0 && x <= 20 ? (5 * x)/2 + 50 : 1/0") { |ds|
+  #           ds.with = "lines"
+  #           ds.title = "(5/2)*x + 50"
+  #           ds.linewidth = 2
+  #         },
 
-          Gnuplot::DataSet.new("x >= 20 && x <= 30 ? 100 : 1/0") { |ds|
-            ds.with = "lines"
-            ds.title = "100"
-            ds.linewidth = 2
-          },
+  #         Gnuplot::DataSet.new("x >= 20 && x <= 30 ? 100 : 1/0") { |ds|
+  #           ds.with = "lines"
+  #           ds.title = "100"
+  #           ds.linewidth = 2
+  #         },
 
-          Gnuplot::DataSet.new("x >= 30 && x <= 40 ? -10*x + 400 : 1/0") { |ds|
-            ds.with = "lines"
-            ds.title = "-10*x + 400"
-            ds.linewidth = 2
-          }
-        ]
-      end
-    end
-    description = "What are velocities at t = 10s, 25s, and 35s?"
-    at10s = 5.0 / 2
-    at25s = 0
-    at35s = -10
-    expect(at10s).to eq 2.5
-    expect(at25s).to eq 0
-    expect(at35s).to eq -10
-  end
+  #         Gnuplot::DataSet.new("x >= 30 && x <= 40 ? -10*x + 400 : 1/0") { |ds|
+  #           ds.with = "lines"
+  #           ds.title = "-10*x + 400"
+  #           ds.linewidth = 2
+  #         }
+  #       ]
+  #     end
+  #   end
+  #   description = "What are velocities at t = 10s, 25s, and 35s?"
+  #   at10s = 5.0 / 2
+  #   at25s = 0
+  #   at35s = -10
+  #   expect(at10s).to eq 2.5
+  #   expect(at25s).to eq 0
+  #   expect(at35s).to eq -10
+  # end
 
-  it "Describing GnuPlot differences between mathematical syntax. Fractional slope values MUST be defined with float values otherwise an integer will be returned regardless of decimal quotient is ignored" do
-    Gnuplot.open do|gp|
-      Gnuplot::Plot.new(gp) do |plot|
-        plot.xrange "[0:40]"
-        plot.yrange "[0:110]"
-        plot.title "Figure P2.12"
-        plot.xlabel "t(s)"
-        plot.ylabel "x(m)"
-        plot.data = [
-          Gnuplot::DataSet.new("x >= 0 && x <= 20 ? (5*x)/2 + 50 : 1/0") { |ds|
-            ds.with = "lines"
-            ds.title = "(5*x)/2 + 50"
-            ds.linewidth = 2
-          },
-
-          Gnuplot::DataSet.new("x >= 0 && x <= 20 ? (5.0/2)*x + 50 : 1/0") { |ds|
-            ds.with = "lines"
-            ds.title = "(5.0/2)*x + 50"
-            ds.linewidth = 2
-          }
-        ]
-      end
-    end
+  it "[p65 q20] A Thompson's gazelle can reach a speed of 13m/s in 3.0s. A lion can reach a speed of 9.5m/s in 1.0s. A trout can reach a speed of 2.8m/s in 0.12s. Which animal has the greatest acceleration?" do
+    gazelle = {
+      :name = "gazelle",
+      :velocity = 13.0,
+      :time = 3.0,
+      :acceleration = 0
+    }
+    lion = {
+      :name = "lion",
+      :velocity = 9.5,
+      :time = 1,
+      :acceleration = 0
+    }
+    trout = {
+      :name = "trout",
+      :velocity = 2.8,
+      :time = 0.12,
+      :acceleration = 0
+    }
+    gazelle[:acceleration] = setConstantAcceleration(gazelle[:velocity], gazelle[:time])
+    lion[:acceleration] = setConstantAcceleration(lion[:velocity], lion[:time])
+    trout[:acceleration] = setConstantAcceleration(trout[:velocity], lion[:time])
+    accelArray = Array.new(gazelle[:acceleration], lion[:acceleration], trout[:acceleration])
+    accelArray.max
   end
 end

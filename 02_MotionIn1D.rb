@@ -15,3 +15,7 @@ def uniformMotion(xi=nil, xf=nil, ti=nil, tf=nil, v=nil)
     (velocity(delta(xi, xf), delta(ti, tf))).round(2)
   end
 end
+
+def setConstantAcceleration(velocity, time)
+  velocity.to_f / time.to_f
+end
