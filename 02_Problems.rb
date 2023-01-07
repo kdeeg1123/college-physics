@@ -211,28 +211,74 @@ describe "Uniform motion" do
   # end
 
   it "[p65 q20] A Thompson's gazelle can reach a speed of 13m/s in 3.0s. A lion can reach a speed of 9.5m/s in 1.0s. A trout can reach a speed of 2.8m/s in 0.12s. Which animal has the greatest acceleration?" do
-    gazelle = {
-      :name = "gazelle",
-      :velocity = 13.0,
-      :time = 3.0,
-      :acceleration = 0
+    animals = {
+      gazelle: {
+        name: 'gazelle',
+        velocity: 13.0,
+        time: 3.0,
+        acceleration: 0
+      },
+      lion: {
+        name: 'lion',
+        velocity: 9.5,
+        time: 1,
+        acceleration: 0
+      },
+      trout: {
+        name: 'trout',
+        velocity: 2.8,
+        time: 0.12,
+        acceleration: 0
+      }
     }
-    lion = {
-      :name = "lion",
-      :velocity = 9.5,
-      :time = 1,
-      :acceleration = 0
-    }
-    trout = {
-      :name = "trout",
-      :velocity = 2.8,
-      :time = 0.12,
-      :acceleration = 0
-    }
-    gazelle[:acceleration] = setConstantAcceleration(gazelle[:velocity], gazelle[:time])
-    lion[:acceleration] = setConstantAcceleration(lion[:velocity], lion[:time])
-    trout[:acceleration] = setConstantAcceleration(trout[:velocity], lion[:time])
-    accelArray = Array.new(gazelle[:acceleration], lion[:acceleration], trout[:acceleration])
-    accelArray.max
+    animals[:gazelle][:acceleration] = setConstantAcceleration(animals[:gazelle][:velocity], animals[:gazelle][:time])
+    animals[:lion][:acceleration] = setConstantAcceleration(animals[:lion][:velocity], animals[:lion][:time])
+    animals[:trout][:acceleration] = setConstantAcceleration(animals[:trout][:velocity], animals[:trout][:time])
+    accelArray = Array.new
+    accelArray.push(animals[:gazelle][:acceleration], animals[:lion][:acceleration], animals[:trout][:acceleration])
+    # puts "Gazelle: #{animals[:gazelle]}"
+    # puts "Lion: #{animals[:lion]}"
+    # puts "Trout: #{animals[:trout]}"
+    fastestAcc = accelArray.max
+    fastestAnimalAcc = animals.select { |key, animal| animal[:acceleration] == fastestAcc }.keys
+    expect(animals[fastestAnimalAcc[0]][:name]).to eq 'trout'
+  end
+
+  it "[p65 q21] When striking, the pike, a predatory fish, can accelerate from rest to a speed of 4.0m.s in 0.11s. A) What is the acceleration of the pike during this strike? B) How far does the pike move during this strike?" do
+    pikeVi = 0
+    pikeVf = 4
+    pikeTi = 0
+    pikeTf = 0.11
+
+    # Section A:
+    pikeAcc = setConstantAcceleration(pikeVf, pikeTf)
+    expect(pikeAcc.round(2)).to eq 36.36
+
+    # Section B:
+    pikeD = uniformMotion(0, nil, pikeTi, pikeTf, pikeVf)
+    expect(pikeD.round(2)).to eq 0.44
+  end
+
+  it "[p65 q22] A) What constant acceleration, in SI units, must a car have to go from zero to 60mph? B) What fraction of g is this? C) How far has the car traveled when it reaches 60mph (Give answer in both SI units and feet)" do
+    carTf = 10 # seconds
+    carVf_imperial = 60 # mph
+    carVi = 0
+    carTi = 0
+
+    # Section A
+    carVf = Math.mphToMps(carVf_imperial)
+    carAcc = setConstantAcceleration(carVf, carTf)
+    expect(carAcc.round(2)).to eq 2.68
+
+    # Section B
+    g = 9.8 # m/s^2
+    fracOfg = carAcc / g
+    expect(fracOfg.round(2)).to eq 0.27
+
+    # Section C
+    carXf = uniformMotion(0, nil, carTi, carTf, carVf)
+    expect(carXf.round(2)).to eq 268.17
+    carXf_imperial = uniformMotion(0, nil, carTi, carTf, carVf_imperial)
+    expect(carXf_imperial.round(2)).to eq 600
   end
 end
